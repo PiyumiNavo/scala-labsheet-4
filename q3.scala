@@ -15,7 +15,7 @@ def formatNames(name: String, formatFunc: String => String): String = formatFunc
 
 def customFormat(name: String): String = {
     val chars = name.toCharArray
-    if (chars.length > 2) chars(2) = chars(2).toUpper
+    if (chars.length > 1) chars(1) = chars(1).toUpper
     new String(chars)
 }
 
