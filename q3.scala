@@ -21,6 +21,6 @@ def customFormat(name: String): String = {
 
 def anotherFormat(name: String): String = {
     val chars = name.toCharArray
-    if (chars.length > 4) chars(4) = chars(4).toUpper
+    if (chars.length > 5) chars(5) = chars(5).toUpper
     new String(chars)
 }
