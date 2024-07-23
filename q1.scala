@@ -1,59 +1,44 @@
-@main def main() = {
-    restockItem("Apples", 10)
-    displayInventory(item_names, item_quantities)
-    sellItem("Bananas", 10)
-    displayInventory(item_names, item_quantities)
-}
-var item_names = List("Apples", "Bananas", "Oranges", "Grapes", "Milk", "Bread", "Eggs", "Cheese", "Tomatoes", "Potatoes")
-var item_quantities = List(50, 30, 40, 20, 10, 25, 60, 15, 35, 45)
+@main def main():Unit = displayInventory()
 
+var itemNames = Array("Apple", "Mango", "Banana", "Biscuit", "Grapes")
+var itemQuantity = Array(50, 25, 10, 35, 25)
+var numItems = itemNames.length 
 
-def displayInventory(itemArr: List[String], quantityArr: List[Int]): Unit = {
-    itemArr match {
-        case Nil => println("Inventory is empty")
-        case head :: tail =>
-            println(s"$head\t\t\t${quantityArr.head}")
-            displayInventory(tail, quantityArr.tail)
-    }
-}
-
-def restockItem(itemName: String, itemQuantity: Int): Unit = {
-    def updateQuantities(names: List[String], quantities: List[Int]): (List[String], List[Int]) = {
-        (names, quantities) match {
-            case (Nil, Nil) => (List(itemName), List(itemQuantity))
-            case (head :: tail, qHead :: qTail) =>
-                if (head == itemName) (names, (qHead + itemQuantity) :: qTail)
-                else {
-                    val (updatedNames, updatedQuantities) = updateQuantities(tail, qTail)
-                    (head :: updatedNames, qHead :: updatedQuantities)
-                }
-            case _ => (names, quantities)
+def displayInventory(n:Int = 0):Unit =
+    n match{
+        case x if numItems == 0 => println("Inventory is Empty")
+        case x if x == numItems -1  => printf("%s \t %d\n",itemNames(n), itemQuantity(n))
+        case _ => {
+            printf("%s \t %d\n",itemNames(n), itemQuantity(n))
+            displayInventory(n+1)
         }
     }
 
-    val (newNames, newQuantities) = updateQuantities(item_names, item_quantities)
-    item_names = newNames
-    item_quantities = newQuantities
-}
 
-def findItemIndex(itemName: String, items: List[String], index: Int = 0): Option[Int] = {
-    items match {
-        case Nil => None
-        case head :: tail =>
-            if (head == itemName) Some(index)
-            else findItemIndex(itemName, tail, index + 1)
+def restockItem(itemName:String, quantity:Int, n:Int = 0):Unit =
+    n match{
+        case x if x == numItems  => printf("Item Name Not Found\n")
+        case x if itemNames(n) == itemName => {
+            itemQuantity(n)+= quantity
+            printf("---------------------\nItem Updated\n--------------------\n")
+        }
+        case _ => {
+            restockItem(itemName:String, quantity:Int, n+1)
+           
+            
+        }
     }
-}
 
-def sellItem(itemName: String, itemQuantity: Int): Unit = {
-    findItemIndex(itemName, item_names) match {
-        case Some(index) =>
-            if (item_quantities(index) >= itemQuantity) {
-                item_quantities = item_quantities.updated(index, item_quantities(index) - itemQuantity)
-                println(s"Sold $itemQuantity of $itemName")
-            } else {
-                println(s"Not enough quantity of $itemName to sell")
-            }
-        case None => println(s"$itemName does not exist in inventory")
+def sellItem(itemName:String, quantity:Int, n:Int = 0):Unit =
+    n match{
+        case x if x == numItems  => printf("Item Name %s Not Found\n",itemName)
+        case x if itemNames(n) == itemName => {
+            itemQuantity(n)-= quantity
+            printf("-------------\nItem Updated\n--------------\n")
+        }
+        case _ => {
+            sellItem(itemName:String, quantity:Int, n+1)
+           
+            
+        }
     }
-}
